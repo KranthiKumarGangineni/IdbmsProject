@@ -1,0 +1,15 @@
+project\idbms\db\StudentGrades.class
+project\idbms\Application.class
+project\idbms\db\AllCourses.class
+project\idbms\util\MyBatisConstants.class
+project\idbms\db\University.class
+project\idbms\configuration\SpringConfig.class
+project\idbms\view\UserView.class
+project\idbms\db\Department.class
+project\idbms\service\MyBatisService.class
+project\idbms\configuration\MybatisConfig.class
+project\idbms\service\MyBatisServiceImpl.class
+project\idbms\view\CourseView.class
+project\idbms\dao\MyBatisDAO.class
+project\idbms\controller\MyBatisController.class
+project\idbms\db\User.class

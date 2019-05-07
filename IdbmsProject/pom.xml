@@ -1,0 +1,263 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<!-- Default Entries that are required for any Pom.xml [Project Object Model 
+		- that contains information about the project and configuration details used 
+		by Maven to build the project] -->
+
+	<!-- Fully Qualified Artifact name will be - <groupId>:<artifactId>:<version> -->
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>IdbmsProject</groupId>
+	<artifactId>Idbms-Project</artifactId>
+	<name>IdbmsProject</name>
+	<version>1.0</version>
+	<packaging>war</packaging>
+
+	<!-- Repo URL from where Dependencies needs to be downloaded -->
+	<repositories>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>jcenter</id>
+			<url>http://jcenter.bintray.com/</url>
+		</repository>
+		<repository>
+			<id>maven.oracle.com</id>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<url>https://maven.oracle.com</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>maven.oracle.com</id>
+			<url>https://maven.oracle.com</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.8.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
+	<!-- To keep all the properties like versions, Timestamps etc.. -->
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- To know the Build Timestamp -->
+		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss'Z'</maven.build.timestamp.format>
+		<!-- Java Version -->
+		<java.version>1.8</java.version>
+		<!-- This class will be main class to be started when running POM -->
+		<start-class>project.idbms.Application</start-class>
+
+		<!-- Dependency Versions -->
+		<spring.boot.starter.version>1.5.8.RELEASE</spring.boot.starter.version>
+		<spring.boot.starter.jpa.version>1.3.2.RELEASE</spring.boot.starter.jpa.version>
+		<mybatis.spring.version>1.1.1</mybatis.spring.version>
+		<dbcp.version>1.4</dbcp.version>
+		<common.lang.version>3.6</common.lang.version>
+		<ojdbc.version>11.2.0.3</ojdbc.version>
+		<javax.servlet.version>3.1.0</javax.servlet.version>
+		<jstl.version>1.2</jstl.version>
+		<tomcat.ember.jasper.version>8.0.36</tomcat.ember.jasper.version>
+		<lombok.version>1.16.18</lombok.version>
+		<commons.collection.version>4.0</commons.collection.version>
+		<log4j.version>1.2.17</log4j.version>
+		<javax.rs.version>2.0</javax.rs.version>
+		<hibernate.core.version>4.3.2.RELEASE</hibernate.core.version>
+
+	</properties>
+
+
+	<dependencies>
+
+		<!-- To get Spring Context Dependencies like @Configuration, @PropertySources 
+			etc.. & Spring Core,WebMvc Dependencies as well -->
+
+		<!-- Spring boot starters -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${spring.boot.starter.version}</version>
+			<exclusions>
+				<!-- Preferring external TOMCAT instead of spring provided one -->
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Embedded Tomcat core package has no JSP rendering support.,Below dependency 
+			needs to be added if Embedded Tomcat is used -->
+
+		<!-- <dependency> <groupId>org.apache.tomcat.embed</groupId> <artifactId>tomcat-embed-jasper</artifactId> 
+			<version>${tomcat.ember.jasper.version}</version> <exclusions> Excluding 
+			Tomcat Embed Core for removing Servlet Api Dependency <exclusion> <groupId>org.apache.tomcat.embed</groupId> 
+			<artifactId>tomcat-embed-core</artifactId> </exclusion> </exclusions> </dependency> -->
+
+		<!-- For BasicDataSource Dependency -->
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>${dbcp.version}</version>
+		</dependency>
+
+		<!-- For StringUtils etc.. Dependencies -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${common.lang.version}</version>
+		</dependency>
+
+		<!-- For CollectionUtils,MapUtils etc.. Dependencies -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>${commons.collection.version}</version>
+		</dependency>
+		
+		<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jersey</artifactId>
+    <version>1.2.0.RELEASE</version>
+</dependency>
+
+		<!-- Mybatis dependency -->
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>${mybatis.spring.version}</version>
+		</dependency>
+
+		<!-- One-Stop-Shop for all Spring related dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${spring.boot.starter.jpa.version}</version>
+		</dependency>
+
+		<!-- Ojdbc [Database] dependency -->
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>${ojdbc.version}</version>
+		</dependency>
+
+		<!-- JSTL dependency -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${jstl.version}</version>
+		</dependency>
+
+		<!-- Servlet (HttpServletRequest,HttpServletResponse etc.. Dependencies -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax.servlet.version}</version>
+		</dependency>
+
+		<!-- Lombok Dependency (No need to setters,Getters,ToString etc.. -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+		</dependency>
+
+	<dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.8.5</version>
+    </dependency>
+    
+		<!-- For Lgging the Errors,Sql statements etc.. -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		
+<dependency>
+    <groupId>com.sparkjava</groupId>
+    <artifactId>spark-core</artifactId>
+    <version>2.7.2</version>
+</dependency>
+
+		<!-- Dependency added for Query Param Import -->
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>${javax.rs.version}</version>
+		</dependency>
+
+	</dependencies>
+
+
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+
+			<!-- Maven Compiler Plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<!-- Added below Plugin to not Maven throw Error if Web.xml is not present 
+				[Check Configuration] -->
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<warName>${project.artifactId}</warName>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>

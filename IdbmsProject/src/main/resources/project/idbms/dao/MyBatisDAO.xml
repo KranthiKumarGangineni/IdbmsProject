@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapper to tell the DAO location -->
+<mapper namespace="project.idbms.dao.MyBatisDAO">
+
+	<!-- Cache Implementation -->
+	<cache flushInterval="30000" readOnly="true" />
+
+	<!-- Result Map for University Fetching -->
+	<resultMap id="UniversityList" type="project.idbms.db.University">
+		<result property="name" column="UNIVERSITY_NAME" />
+		<result property="id" column="UNIVERSITY_ID " />
+		<result property="loc" column="UNIVERSITY_LOC" />
+		<result property="link" column="UNIVERSITY_IMAGE_LINK" />
+
+	</resultMap>
+
+	<!-- Result Map for User Fetching -->
+	<resultMap id="UserDet" type="project.idbms.db.User">
+		<result property="userId" column="USER_ID" />
+		<result property="password" column="PASSWORD " />
+		<result property="role" column="USER_ROLE" />
+	</resultMap>
+
+	<!-- Result Map for Courses Fetching -->
+	<resultMap id="CoursesDet" type="project.idbms.db.AllCourses">
+		<result property="courseId" column="COURSE_ID" />
+		<result property="courseName" column="COURSE_NAME" />
+		<result property="courseDescription" column="COURSE_DESC" />
+		<result property="userId" column="STUDENT_ID" />
+	</resultMap>
+
+	<!-- Result Map for Grades Fetching -->
+	<resultMap id="GradesDet" type="project.idbms.db.StudentGrades">
+		<result property="courseId" column="COURSE_ID" />
+		<result property="courseName" column="COURSE_NAME" />
+		<result property="courseDescription" column="COURSE_DESC" />
+		<result property="grade" column="GRADE" />
+		<result property="studentId" column="STUDENT_ID" />
+		<result property="studentName" column="STUDENT_NAME" />
+	</resultMap>
+	
+	<!-- Result Map for Courses Fetching -->
+	<resultMap id="DepartmentDet" type="project.idbms.db.Department">
+		<result property="departmentId" column="DEPT_ID" />
+		<result property="departmentDescription" column="DEPT_DESC" />
+	</resultMap>
+
+	<select id="fetchUnivDetails" parameterType="map" resultMap="UniversityList">
+		SELECT UNIVERSITY_NAME, UNIVERSITY_ID, UNIVERSITY_LOC,
+		UNIVERSITY_IMAGE_LINK FROM UNIVERSITIES
+	</select>
+
+	<select id="fetchUserDetailsByUserId" parameterType="map"
+		resultMap="UserDet">
+		SELECT USER_ID, PASSWORD, USER_ROLE FROM USERS WHERE USER_ID
+		= #{userId}
+	</select>
+	
+	<select id="fetchAllDepartments" parameterType="map"
+		resultMap="DepartmentDet">
+		SELECT DEPT_ID, DEPT_DESC FROM DEPARTMENTS
+	</select>
+
+	<insert id="registerUser" parameterType="map">
+		INSERT INTO USERS
+		(USER_ID, PASSWORD, USER_ROLE, INSERT_DATE, NAME )
+		VALUES (#{userId},
+		#{encryptedPassword}, #{role}, SYSDATE, #{username})
+	</insert>
+
+	<select id="fetchAllCoursesPresent" parameterType="map"
+		resultMap="CoursesDet">
+		SELECT co.COURSE_ID, COURSE_NAME, COURSE_DESC, STUDENT_ID
+		FROM COURSES co LEFT JOIN Students stu
+		ON co.Course_id = stu.course_id
+		AND stu.Student_Id = #{userId}
+	</select>
+
+	<select id="fetchGradesById" parameterType="map" resultMap="GradesDet">
+		Select co.Course_id Course_id, co.Course_name Course_name, co.Course_Desc, 
+        (Select gr.grade FROM grades gr WHERE gr.grade_id = stu.id) AS GRADE
+			FROM Courses co, Students stu
+        WHERE co.Course_id = stu.Course_id AND stu.Student_id = #{userId}
+	</select>
+
+	<select id="fetchCoursesForStudent" parameterType="map"
+		resultMap="CoursesDet">
+		SELECT co.COURSE_ID COURSE_ID, co.COURSE_NAME COURSE_NAME,
+		co.COURSE_DESC COURSE_DESC
+		FROM COURSES co, Students stu WHERE co.Course_id = stu.COURSE_ID
+		AND stu.STUDENT_ID = #{userId}
+	</select>
+	
+	<select id="fetchStudentsByCourse" parameterType="map"
+		resultMap="GradesDet">
+		Select co.Course_id Course_id, co.Course_name Course_name, co.Course_Desc Course_Desc,stu.student_id, stu.student_name,
+stu.id,
+        (Select gr.grade FROM grades gr WHERE gr.grade_id = stu.id) AS GRADE
+			FROM Courses co, Students stu
+        WHERE co.Course_id = stu.Course_id AND stu.Course_id = #{courseId}
+	</select>
+
+	<select id="fetchCoursesForProfessor" parameterType="map"
+		resultMap="CoursesDet">
+		Select co.Course_id Course_id, co.Course_name Course_name, co.Course_Desc Course_Desc
+FROM Courses co, Professors prof
+        WHERE co.Course_id = prof.Course_id AND prof.prof_id = #{userId}
+	</select>
+	
+	<insert id="insertCourseForStudent" parameterType="map">
+		INSERT INTO STUDENTS
+		(STUDENT_ID, COURSE_ID, STUDENT_NAME )
+		VALUES (#{userId},
+		#{courseId}, (SELECT NAME FROM USERS WHERE USER_ID = #{userId}))
+	</insert>
+	
+	<insert id="insertCourse" parameterType="map">
+		INSERT INTO COURSES
+		(COURSE_ID, COURSE_NAME, COURSE_DESC )
+		VALUES (#{courseId},
+		#{courseName}, #{courseDescription})
+	</insert>
+	
+	<insert id="insertCourseForProfessor" parameterType="map">
+		INSERT INTO PROFESSORS
+		(PROF_ID, PROF_NAME, COURSE_ID, DEPT_ID )
+		VALUES (#{professorId}, (SELECT NAME FROM USERS WHERE USER_ID = #{professorId}), 
+		#{courseId}, #{deptId})
+	</insert>
+	
+	<select id="checkIfCourseAlreadyPresent" parameterType="map"
+		resultMap="CoursesDet">
+		SELECT COURSE_ID, COURSE_NAME FROM COURSES WHERE COURSE_ID = #{courseId}
+	</select>
+	
+	<insert id="gradeStudentForCourse" parameterType="map">
+		INSERT INTO GRADES
+		(GRADE_ID, GRADE )
+		VALUES (#{gradeId}, #{grade})
+	</insert>
+		
+</mapper>
